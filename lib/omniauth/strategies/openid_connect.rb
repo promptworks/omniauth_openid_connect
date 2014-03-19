@@ -115,7 +115,7 @@ module OmniAuth
            @raw_info = {}
            userinfo = access_token.userinfo!
            userinfo.all_attributes.each {|att| @raw_info[att] = userinfo.send att.to_sym}
-         end
+          end
           @raw_info
         end
 
@@ -207,15 +207,15 @@ module OmniAuth
         # there should be only 1 key
         jwk = json["keys"][0]
         key = nil
-        case jwk["alg"].downcase
-          when "rsa"
-             key = create_rsa_key(jwk["mod"],jwk["exp"])
-          when "rs256", "rs384", "rs512"
-             key = create_rsa_key(jwk["n"],jwk["e"])
-          when "ec"
-             key = create_ec_key(jwk["x"],jwk["y"],jwk["crv"])
-          else
-          
+        case jwk["kty"].downcase
+          # when "rsa"
+          #    key = create_rsa_key(jwk["mod"],jwk["exp"])
+        when "rsa", "rs256", "rs384", "rs512"
+          key = create_rsa_key(jwk["n"],jwk["e"])
+        when "ec"
+          key = create_ec_key(jwk["x"],jwk["y"],jwk["crv"])
+        else
+          key = nil
         end
         key
       end
