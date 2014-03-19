@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 # Specify your gem's dependencies in omniauth-oauth2.gemspec
 gemspec
 gem 'rack-oauth2'
-gem 'openid_connect', '0.7.2'
+gem 'openid_connect', '0.8.0'
 gem 'pry'
 gem 'pry-nav'
 gem 'rake'
