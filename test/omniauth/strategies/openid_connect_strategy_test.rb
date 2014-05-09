@@ -1,9 +1,9 @@
 require 'test_helper'
-class OpenIDConnectStrategyTest < Test::Unit::TestCase
+class OpenIDConnectStrategyTest < Minitest::Test
   include Rack::Test::Methods
   include OmniAuth::Test::StrategyTestCase
   include WebMock::API
-  
+
   def strategy
     # return the parameters to a Rack::Builder map call:
     [OmniAuth::Strategies::OpenIDConnect,"localhost","my_id","my_s",{client_options:{scheme:"https", port:nil}}]
@@ -12,7 +12,7 @@ class OpenIDConnectStrategyTest < Test::Unit::TestCase
   def setup
     # @strat = create_client("http://localhost", "my_id","my_secret" )
   end
-  
+
   def test_authorization_request
     get '/auth/openid_connect'
     assert last_response.status == 302
@@ -21,10 +21,10 @@ class OpenIDConnectStrategyTest < Test::Unit::TestCase
     assert uri.scheme == "https"
     assert uri.query.index("client_id=my_id"), "client id "
   end
-  
-  
+
+
   def test_callback
-    
+
     get '/auth/openid_connect'
     @nonce = session[:nonce]
 
@@ -39,8 +39,8 @@ class OpenIDConnectStrategyTest < Test::Unit::TestCase
       eos
 
       )
-      
-      
+
+
      stub_request(:get,'https://localhost/userinfo').to_return( :body=><<-eos
      {
       "user_id": "248289761001",
@@ -53,29 +53,29 @@ class OpenIDConnectStrategyTest < Test::Unit::TestCase
       eos
 
       )
-      
+
     stub_request(:get,'https://localhost/x509').to_return( :body=>File.read("./test/fixtures/keys/x509_pub.pem"))
 
     get '/auth/openid_connect/callback', {code:"Qcb0Orv1zh30vL1MPRsbm-diHiMwcLyZvn1arpZv-Jxf_11jnpEX3Tgfvk", state:"af0ifjsldkj"}
-    
-    
-  end
-  
 
-  
+
+  end
+
+
+
   def test_userinfo
      # Mock a web request location that will return info for a userinfo  request
   end
-  
-  
+
+
   def test_configuration
      client = create_client("http://localhost", "my_id","my_secret" )
      assert_equal "http://localhost", client.options.host
      assert_equal "my_id", client.options.client_id
-     assert_equal "my_secret", client.options.client_secret  
+     assert_equal "my_secret", client.options.client_secret
   end
-  
-  
+
+
   def create_id_token(nonce)
    token =  OpenIDConnect::ResponseObject::IdToken.new ({ iss: "https://localhost",
      user_id:  "248289761001",
@@ -88,6 +88,6 @@ class OpenIDConnectStrategyTest < Test::Unit::TestCase
    key = OpenSSL::PKey::RSA.new File.read("./test/fixtures/keys/x509.pem")
    token.to_jwt("my_s",:HS256)
   end
-  
-  
+
+
 end

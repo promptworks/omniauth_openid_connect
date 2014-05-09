@@ -14,5 +14,7 @@ group :development, :test do
   gem 'guard-bundler'
   gem 'growl'
   gem 'rb-fsevent'
-
+end
+group :test do
+  gem "minitest"
 end
